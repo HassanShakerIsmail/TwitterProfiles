@@ -13,12 +13,9 @@ struct TweetPackage {
 	string authorUsername;
 	int authorFollowers;
 	int authorFollowing;
-
-
 };
 
 struct userProfile {
-	
 	int followerCount{ 0 };
 	int followingCount{ 0 };
 	int TotalTweets{ 0 };
@@ -31,9 +28,8 @@ struct userProfile {
 	personality userPersonality;
 	vector<TweetPackage> Tweets{};
 	vector<string> FilesAlreadyRead{};
-	 void read_and_package_tdata_csv(string filename);
-	 void write_twitter_data_csv();
-
+	void read_and_package_tdata_csv(string filename);
+	void write_twitter_data_csv();
 };
 
 // Error struct
@@ -43,7 +39,7 @@ struct error {
 	int errorCode{ 0 };
 
 	error(string msg = "Unspecified Exception", int errorCode = -1) :
-		errorMessage{ msg }, errorCode{ errorCode }{};
+		errorMessage{ msg }, errorCode{ errorCode } {};
 
 	void displayError() {
 		cout << "Exception occured with message: " << errorMessage << '\n';
