@@ -10,3 +10,5 @@ Continuing on, based on these statistics, users would have personality profiles 
 For example, after analyzing Kanye West's 100 most recent tweets, a profile would be created for Kanye, in which traits like narcissism, aggression, empathy, etc would be documented and compared against an average baseline (Which for now, is arbitrarly set)
 
 Please note that the python code wont work, because this API uses twitter accounts bearer token; and I've for obvious reasons not made that public.
+
+As of April 23rd 2022, my good friend @rbangre has joined me on this project.
