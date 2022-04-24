@@ -1,6 +1,6 @@
 # TwitterProfiles
 
-This is a pet project I've created after being inspired by R tweet package, which allows you to analyze stats of tweets from various users, such as tweet length, like, retweets, etc.
+This is a pet project we've (myself @tacituskilgore, and good friend @rbangre having joined in with me) created after being inspired by R tweet package, which allows you to analyze stats of tweets from various users, such as tweet length, like, retweets, etc.
 
 The idea of the project is as follows:
 Using the tweepy python library, and Twitter's API - I created a python program that would (with manual tweaking unfortunately, I've yet to automate this part) retrieve and store certain information about a users most recent 100 (configurable to whatever) tweets. The information I chose to store were things like retweets, likes, tweet counts, followers, and a few others you can find in the python file. Note, these data are stored in CSV format.
@@ -11,4 +11,3 @@ For example, after analyzing Kanye West's 100 most recent tweets, a profile woul
 
 Please note that the python code wont work, because this API uses twitter accounts bearer token; and I've for obvious reasons not made that public.
 
-As of April 23rd 2022, my good friend @rbangre has joined me on this project.
