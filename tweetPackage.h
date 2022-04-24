@@ -1,11 +1,11 @@
 #pragma once
+#ifndef CALCULATIONS_H
+#define CALCULATIONS_H
+
 #include <vector>
 #include <sstream>
 #include "personality.cpp"
 #include <iostream>
-
-#ifndef CALCULATIONS_H
-#define CALCULATIONS_H
 
 #include <string>
 

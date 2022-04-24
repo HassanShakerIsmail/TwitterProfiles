@@ -20,7 +20,6 @@ void userProfile::calc_summary_stats() {
 			this->TotalTweets += 1;
 		}
 	}
-
 }
 
 

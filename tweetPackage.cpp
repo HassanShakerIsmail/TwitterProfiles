@@ -1,25 +1,6 @@
 #pragma once
 #include "tweetPackage.h"
 
-
-using namespace std;
-
-bool TweetPackage::isValidTweetPackage() {
-	bool status{ false };
-	if (this->authorUsername == "NULL" || this->likes == -1 || this->replies == -1 || this->retweets == -1 || this->quotes == -1) {
-		status = false;
-	} else { status = true; }
-
-	if (this->likes == 0 && this->replies == 0 && this->retweets == 0 && status == true) {
-		cout << "WARNING: Tweet with content: " << this->tweet << " was found to have 0 likes, replies, and retweets\n";
-		cout << "An error may have occured in recording of tweet statistics. While TweetPackage is valid, reviewing recorded data highly recommended\n";
-	}
-
-	return status;
-
-}
-
-
 TweetPackage::TweetPackage(std::string tweet, int likes, int replies,
 	int retweets, int quotes, std::string authorName, std::string authorUsername,
 	int authorFollowers, int authorFollowing) {
@@ -38,40 +19,53 @@ TweetPackage::TweetPackage() :
 	tweet{ "NULL" }, likes{ -1 }, replies{ -1 }, retweets{ -1 }, quotes{ -1 }, 
 	authorName{ "NULL" }, authorUsername{ "NULL" }, authorFollowers{ -1 }, authorFollowing{ -1 } {};
 
-void TweetPackage::setTweet(std::string Tweet) {
-	this->tweet = Tweet;
+bool TweetPackage::isValidTweetPackage() {
+	bool status{ false };
+	if (this->authorUsername == "NULL" || this->likes == -1 || this->replies == -1 || this->retweets == -1 || this->quotes == -1) {
+		status = false;
+	} else { status = true; }
+
+	if (this->likes == 0 && this->replies == 0 && this->retweets == 0 && status == true) {
+		cout << "WARNING: Tweet with content: " << this->tweet << " was found to have 0 likes, replies, and retweets\n";
+		cout << "An error may have occured in recording of tweet statistics. While TweetPackage is valid, reviewing recorded data highly recommended\n";
+	}
+	return status;
+}
+
+void TweetPackage::setTweet(std::string tweet) {
+	this->tweet = tweet;
 }
 
 std::string TweetPackage::getTweet() {
 	return this->tweet;
 }
 
-void TweetPackage::setLikes(int Likes) {
-	this->likes = Likes;
+void TweetPackage::setLikes(int likes) {
+	this->likes = likes;
 }
 
 int TweetPackage::getLikes() {
 	return this->likes;
 }
 
-void TweetPackage::setReplies(int Replies) {
-	this->replies = Replies;
+void TweetPackage::setReplies(int replies) {
+	this->replies = replies;
 }
 
 int TweetPackage::getReplies() {
 	return this->replies;
 }
 
-void TweetPackage::setRetweets(int Retweets) {
-	this->retweets = Retweets;
+void TweetPackage::setRetweets(int retweets) {
+	this->retweets = retweets;
 }
 
 int TweetPackage::getRetweets() {
 	return this->retweets;
 }
 
-void TweetPackage::setQuotes(int Quotes) {
-	this->quotes = Quotes;
+void TweetPackage::setQuotes(int quotes) {
+	this->quotes = quotes;
 }
 
 int TweetPackage::getQuotes() {
