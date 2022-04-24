@@ -31,8 +31,15 @@ double PersonalityResults::calculate_social_factor() {
     or retweet. 
     */
    
-   double engagement_factor = (profile.getTotalLikes() + profile.getTotalRetweets() + profile.getTotalReplies()) / profile.getTotalTweets();
-   return engagement_factor; 
+   double engagement_factor = (profile.getTotalLikes() + profile.getTotalRetweets() + profile.getTotalReplies()) / profile.getFollowerCount();
+
+   if (engagement_factor < 0.05) {
+       return -1; 
+   } else if (engagement_factor < 0.3) {
+       return 0; 
+   } else {
+       return 1; 
+   }
 }
 
 double PersonalityResults::calculate_neuroticism() {
