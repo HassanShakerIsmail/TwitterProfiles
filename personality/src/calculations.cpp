@@ -1,15 +1,7 @@
 #include "calculations.h"
 
-PersonalityResults::PersonalityResults(std::vector<TweetPackage> tweetPackages) {
-    this->tweetPackages = tweetPackages;
-
-    this->agreeableness = calculate_agreeableness();
-    this->openness = calculate_openness();
-    this->creativity = calculate_creativity();
-    this->selfCenteredness = calculate_self_centeredness();
-    this->empathy = calculate_empathy();
-    this->socialFactor = calculate_social_factor();
-    this->neuroticism = calculate_neuroticism();
+PersonalityResults::PersonalityResults(UserProfile profile) {
+    this->profile = profile;
 }
 
 double PersonalityResults::calculate_agreeableness() {
@@ -33,7 +25,21 @@ double PersonalityResults::calculate_empathy() {
 }
 
 double PersonalityResults::calculate_social_factor() {
-    // Calculate social factor
+    /* 
+    Here we aim to calculate the social factor of a twitter user. We will do this by determining if their engagements are high or low. 
+    We use the scale provided by https://scrunch.com/blog/what-is-a-good-engagement-rate-on-twitter. An engagement is defined by a like
+    or retweet. 
+    */
+   
+   double engagement_factor = (profile.getTotalLikes() + profile.getTotalRetweets() + profile.getTotalReplies()) / profile.getFollowerCount();
+
+   if (engagement_factor < 0.05) {
+       return -1; 
+   } else if (engagement_factor < 0.3) {
+       return 0; 
+   } else {
+       return 1; 
+   }
 }
 
 double PersonalityResults::calculate_neuroticism() {

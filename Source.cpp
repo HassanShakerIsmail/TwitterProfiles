@@ -2,10 +2,10 @@
 #include "userProfile.h"
 int main() {
 	try {
-		userProfile x;
+		UserProfile x;
 		x.setUsername("kanyewest");
 		x.setName("ye");
-		userProfile y;
+		UserProfile y;
 		y.setUsername("JustinTrudeau");
 		y.setName("Justin Trudeau");
 		//x.read_twitter_data_csv("JustinTrudeau_twitterdata.csv");

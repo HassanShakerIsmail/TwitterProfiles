@@ -3,22 +3,12 @@
 
 #include <vector>
 #include "tweetPackage.h"
+#include "userProfile.h"
 
 class PersonalityResults {
-    double agreeableness; 
-    double openness; 
-	double creativity; 
-	double selfCenteredness; 
-	double empathy; 
-	double socialFactor;
-	double neuroticism;
-
-    std::vector<TweetPackage> tweetPackages; 
-
+    UserProfile profile; 
  public: 
-    PersonalityResults(std::vector<TweetPackage> tweetPackages); 
-
- private:
+    PersonalityResults(UserProfile profile); 
     double calculate_agreeableness();
     double calculate_openness();
     double calculate_creativity();
