@@ -1,38 +1,133 @@
 #include "userProfile.h"
 
-void UserProfile::setName(string name) {
+#pragma warning(disable:4996)
+#ifdef _MSC_VER
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
+void userProfile::setName(string name) {
 	this->name = name;
 }
 
-void UserProfile::setUsername(string user) {
+void userProfile::setUsername(string user) {
 	this->username = user;
 }
 
-void UserProfile::calc_summary_stats() {
-	for (int i = 0; i < this->tweets.size(); ++i) {
-		if (this->tweets[i].isValidTweetPackage() == false || this->tweets[i].getAuthorUsername() != this->username) {
-			continue;
-		}
-		else {
-			this->totalLikes += this->tweets[i].getLikes();
-			this->totalReplies += this->tweets[i].getReplies();
-			this->totalRetweets += this->tweets[i].getRetweets();
-			this->totalTweets += 1;
-		}
+void userProfile::delete_dynamic_profile(userProfile* prof) {
+	delete prof;
+
+}
+
+userProfile* userProfile::create_dynamic_profile(string username,string name) {
+	userProfile* result = new userProfile(name, username);
+	return result;
+}
+
+void userProfile::update_profile() {
+	this->clean_tweets();
+	if (this->Tweets.back().getAuthorFollowers() != this->followerCount) {
+		cout << "WARNING: Profile follower count did not match most recent tweet follower count, was updated to most recent tweet follower count.\n";
+		this->followerCount = this->Tweets.back().getAuthorFollowers();
 	}
+
+	if(this->Tweets.back().getAuthorFollowing() != this->followingCount){
+		cout << "WARNING: Profile following count did not match most recent tweet following count, was updated to most recent tweet following count.\n";
+		this->followingCount = this->Tweets.back().getAuthorFollowing();
+	}
+
+	this->calc_summary_stats();
+
+
+
+}
+
+userProfile userProfile::load_profile(string username) {
+	ifstream instance{ username + "_profile.txt" };
+	if (instance.fail()) {
+		cout << "WARNING: Profile associated with username: " << username << " was NOT found. A default profile empty profile was returned.\n";
+		userProfile empty;
+		return empty;
+	}
+	else {
+		string buffer;
+		stringstream intermediateBuffer;
+		getline(instance, buffer); // name
+		bool recordName{ false };
+		for (char c : buffer) {
+			if (c == 39) {
+				recordName = not(recordName);
+			}
+
+			if (recordName == true) {
+				intermediateBuffer << c;
+			}
+
+		
+		}
+
+
+
+
+	}
+
+
+	userProfile result;
+	return result;
+
 }
 
 
-void UserProfile::clean_tweets() {
-	for (int i = 0; i < this->tweets.size(); ++i) {
-		if (this->tweets[i].isValidTweetPackage() == false) {
-			 cout << "WARNING: Tweet " << i << " with content: " << this->tweets[i].getTweet() << " was removed.\n";
-			 swap(this->tweets[i],this->tweets.back());
-			 this->tweets.pop_back();
-		} else if (this->tweets[i].getAuthorUsername() != this->username) {
-			 cout << "WARNING: Tweet " << i << " with content: " << this->tweets[i].getTweet() << " was removed, due to differing author usernames.\n";
-			 swap(this->tweets[i], this->tweets.back());
-			 this->tweets.pop_back();
+void userProfile::store_profile() {
+	string filename = this->username + "_profile.txt";
+	auto date = chrono::system_clock::now();
+	time_t dt = chrono::system_clock::to_time_t(date);
+			ofstream instance{ this->username + "_profile.txt", ios_base::trunc};
+			//instance.seekp(0,ios_base::beg);
+			instance << "Name: " << "'" + this->name + "'" << '\n';
+			instance << "Username: " << this->username << '\n';
+			instance << "Follower count: " << this->followerCount << '\n';
+			instance << "Following count: " << this->followingCount << '\n';
+			instance << "Total tweets analyzed: " << this->TotalTweets << '\n';
+			instance << "Total replies across all tweets: " << this->TotalReplies << '\n';
+			instance << "Total retweets across all tweets: " << this->TotalRetweets << '\n';
+			instance << "Created: " << ctime(&dt) << '\n';
+			instance << "Profile created using following files: " << '\n';
+			//instance.seekp(ios_base::end);
+			for (string file : this->FilesAlreadyRead) {
+				instance << file << '\n';
+			}
+			// instance << personality_summary(this->userPersonality);
+
+}
+
+
+
+void userProfile::calc_summary_stats() {
+	for (int i = 0; i < this->Tweets.size(); ++i) {
+		if (this->Tweets[i].isValidTweetPackage() == false || this->Tweets[i].getAuthorUsername() != this->username) {
+			continue;
+		}
+		else {
+			this->TotalLikes += this->Tweets[i].getLikes();
+			this->TotalReplies += this->Tweets[i].getReplies();
+			this->TotalRetweets += this->Tweets[i].getRetweets();
+			this->TotalTweets += 1;
+		}
+	}
+
+}
+
+
+void userProfile::clean_tweets() {
+	for (int i = 0; i < this->Tweets.size(); ++i) {
+		if (this->Tweets[i].isValidTweetPackage() == false) {
+			 cout << "WARNING: Tweet " << i << " with content: " << this->Tweets[i].getTweet() << " was removed.\n";
+			 swap(this->Tweets[i],this->Tweets.back());
+			 this->Tweets.pop_back();
+		} else if (this->Tweets[i].getAuthorUsername() != this->username) {
+			 cout << "WARNING: Tweet " << i << " with content: " << this->Tweets[i].getTweet() << " was removed, due to differing author usernames.\n";
+			 swap(this->Tweets[i], this->Tweets.back());
+			 this->Tweets.pop_back();
 	
 		} 
 	}
@@ -47,7 +142,7 @@ void UserProfile::clean_tweets() {
 // requires: 
 //	assumes that inputted csv file only contains data corresponding to tweets for the userProfile implictly calling the function.
 //  data must be in csv format: i,tweet,rt_count,rply_count,like_count,quote_count,name,user_name,follower_count,following_count,total_num_tweets
-void UserProfile::read_and_package_tdata_csv(string filename) {
+void userProfile::read_and_package_tdata_csv(string filename) {
 	ifstream fileInstance{ filename };
 	if (fileInstance.fail()) {
 		throw error("Failed to find fileinstance with name: " + filename, -1);
@@ -81,6 +176,8 @@ void UserProfile::read_and_package_tdata_csv(string filename) {
 
 			if ((input[i] == ',' && ignore_commas == false) || i == input.length()) { // comma, or new line - push result in
 				if (input[i] == ',') { ++commaCount; }
+				//cout << input[i] << '\n';
+				//++commaCount;
 				results.push_back(intermediateBuffer.str());
 
 				if ((commaCount - 1) % 10 == 0) { // tweet
@@ -115,8 +212,9 @@ void UserProfile::read_and_package_tdata_csv(string filename) {
 					buffer.setAuthorFollowers(stoi(intermediateBuffer.str()));
 				}
 
-				if ((commaCount - 9) % 10 == 0) { // num following
+				if (((commaCount - 9) % 10 == 0) && input[i] == ',') { // num following
 					buffer.setAuthorFollowing(stoi(intermediateBuffer.str()));
+					
 				}
 
 
@@ -140,114 +238,67 @@ void UserProfile::read_and_package_tdata_csv(string filename) {
 		return;
 	}
 
-
-	// Simplified console output -> keep?
-	/*
-	for (int i = 0; i < packagedTweets.size(); ++i) {
-		cout << i << "------\n";
-		cout << packagedTweets[i].getTweet() << '\n';
-		cout << "likes: " << packagedTweets[i].getLikes() << '\n';
-		cout << "retweets: " << packagedTweets[i].getRetweets() << '\n';
-		cout << "quotes: " << packagedTweets[i].getQuotes() << '\n';
-		cout << "replies: " << packagedTweets[i].getReplies() << '\n';
-	} */
-
 	for (int i = 0; i < packagedTweets.size(); ++i) {
 		if (packagedTweets[i].getAuthorName() != this->name && packagedTweets[i].getAuthorUsername() != this->username) {
 			cout << "WARNING: author display name and username for tweet: " << i << " do not match the associated profile for: " << this->username << ".\n";
 			cout << "consider discarding, or seriously reviewing the offending tweet.\n";
 		}
 
-		this->tweets.push_back(packagedTweets[i]);
+		this->Tweets.push_back(packagedTweets[i]);
 	}
+
+
 
 
 }
 
-void UserProfile::tweets_file_summary(string filename) {
+void userProfile::tweets_file_summary(string filename) {
 	if (filename == "NULL") {
 		filename = this->username + "_tweet_summary.txt";
 	}
 
 	if (fileExists(filename) == true){
 		ofstream instance{ filename , ios_base::app};
-		for (int i = 0; i < this->tweets.size(); ++i) {
+		for (int i = 0; i < this->Tweets.size(); ++i) {
 			instance << i << "------\n";
-			instance << tweets[i].getTweet() << '\n';
-			instance << "likes: " << tweets[i].getLikes() << '\n';
-			instance << "retweets: " << tweets[i].getRetweets() << '\n';
-			instance << "quotes: " << tweets[i].getQuotes() << '\n';
-			instance << "replies: " << tweets[i].getReplies() << '\n';
-			if (i == this->tweets.size() - 1) {
+			instance << Tweets[i].getTweet() << '\n';
+			instance << "likes: " << Tweets[i].getLikes() << '\n';
+			instance << "retweets: " << Tweets[i].getRetweets() << '\n';
+			instance << "quotes: " << Tweets[i].getQuotes() << '\n';
+			instance << "replies: " << Tweets[i].getReplies() << '\n'; 
+			if (i == this->Tweets.size() - 1) {
 				instance << "------\n";
-				instance << "total tweets calculated for sample batch: " << this->tweets.size() << '\n';
-				instance << "total likes across all tweets for sample batch: " << this->totalLikes << '\n';
-				instance << "total replies across all tweets for sample batch: " << this->totalReplies << '\n';
-				instance << "total retweets across all tweets for sample batch: " << this->totalRetweets << '\n';
+				instance << "total tweets calculated for sample batch: " << this->Tweets.size() << '\n';
+				instance << "total likes across all tweets for sample batch: " << this->TotalLikes << '\n';
+				instance << "total replies across all tweets for sample batch: " << this->TotalReplies << '\n';
+				instance << "total retweets across all tweets for sample batch: " << this->TotalRetweets << '\n';
 			}
 		}
 
 	}
 	else {
 		ofstream instance{ filename };
-		for (int i = 0; i < this->tweets.size(); ++i) {
+		for (int i = 0; i < this->Tweets.size(); ++i) {
 			instance << i << "------\n";
-			instance << tweets[i].getTweet() << '\n';
-			instance << "likes: " << tweets[i].getLikes() << '\n';
-			instance << "retweets: " << tweets[i].getRetweets() << '\n';
-			instance << "quotes: " << tweets[i].getQuotes() << '\n';
-			instance << "replies: " << tweets[i].getReplies() << '\n';
-			if (i == this->tweets.size() - 1) {
+			instance << Tweets[i].getTweet() << '\n';
+			instance << "likes: " << Tweets[i].getLikes() << '\n';
+			instance << "retweets: " << Tweets[i].getRetweets() << '\n';
+			instance << "quotes: " << Tweets[i].getQuotes() << '\n';
+			instance << "replies: " << Tweets[i].getReplies() << '\n';
+			instance << "following: " << Tweets[i].getAuthorFollowing() << '\n';
+			if (i == this->Tweets.size() - 1) {
 				instance << "------\n";
-				instance << "total tweets calculated for sample batch: " << this->tweets.size() << '\n';
-				instance << "total likes across all tweets for sample batch: " << this->totalLikes << '\n';
-				instance << "total replies across all tweets for sample batch: " << this->totalReplies << '\n';
-				instance << "total retweets across all tweets for sample batch: " << this->totalRetweets << '\n';
+				instance << "total tweets calculated for sample batch: " << this->Tweets.size() << '\n';
+				instance << "total likes across all tweets for sample batch: " << this->TotalLikes << '\n';
+				instance << "total replies across all tweets for sample batch: " << this->TotalReplies << '\n';
+				instance << "total retweets across all tweets for sample batch: " << this->TotalRetweets << '\n';
 			}
 		}
 	}
+
+
+
 }
 
-std::vector<TweetPackage> UserProfile::getTweets() {
-	return this->tweets;
-}
 
-int UserProfile::getTotalLikes() {
-	return this->totalLikes;
-}
-
-int UserProfile::getTotalReplies() {
-	return this->totalReplies;
-}
-
-int UserProfile::getTotalRetweets() {
-	return this->totalRetweets;
-}
-
-int UserProfile::getFollowerCount() {
-	return this->followerCount; 
-}
-
-// write_twitter_data_csv() is a member function to userProfile that for a called userProfile,
-//  will output it's collected twitter data to the userProfile's data file 
-//  (or append the new data onto it, assuming the profile already has a storage file)
-//  NOTE: that this does NOT print the userProfiles personality profile - something write_personality_profile_csv() handles.
-/*void userProfile::write_twitter_data_csv() {
-	string fileName = username + "_twitter_data.txt";
-	bool fileExistence = fileExists(fileName);
-	ofstream outputInstance{ fileName };
-
-	if (fileExistence == false) { // Output header -> MAY NEED TO BE UPDATED WITH MOST CURRENT VALUES!
-		outputInstance << "USERPROFILE FOR USERNAME: " << username << " NAME: " << name << "\n";
-		outputInstance << "FOLLOWER COUNT: " << followerCount << " FOLLOWING COUNT: " << followingCount << '\n';
-		outputInstance << "TOTAL TWEETS: " << TotalTweets << '\n';
-	}
-
-	for (int i = 0; i < Tweets.size(); ++i) {
-		outputInstance << "TWEET: \n" << Tweets[i].Tweet << '\n' << "LIKES:" << Tweets[i].Likes << '\n';
-		outputInstance << "RETWEETS: " << Tweets[i].Retweets << "\n" << "REPLIES: " << Tweets[i].Replies << '\n';
-		outputInstance << "QUOTES: " << Tweets[i].Quotes << '\n';
-	}
-
-} */
 
