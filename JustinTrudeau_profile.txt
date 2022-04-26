@@ -1,0 +1,11 @@
+Name: 'Justin Trudeau'
+Username: JustinTrudeau
+Follower count: 6084236
+Following count: 940
+Total tweets analyzed: 100
+Total replies across all tweets: 29285
+Total retweets across all tweets: 13891
+Created: Tue Apr 26 09:21:16 2022
+
+Profile created using following files: 
+JustinTrudeau_twitterdata.csv
