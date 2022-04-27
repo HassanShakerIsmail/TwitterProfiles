@@ -1,0 +1,11 @@
+Name: 'ye'
+Username: kanyewest
+Follower count: 30727754
+Following count: 209
+Total tweets analyzed: 200
+Total replies across all tweets: 400688
+Total retweets across all tweets: 1307886
+Created: Tue Apr 26 11:00:46 2022
+
+Profile created using following files: 
+twitterdata.csv
